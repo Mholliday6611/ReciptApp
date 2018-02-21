@@ -18,4 +18,5 @@ tokes(passport)
 routes(app, passport)
 
 app.listen(process.env.PORT || 8080)
-mongoose.connect("mongodb://localhost/recipts")
+// mongoose.connect("mongodb://localhost/recipts")
+mongoose.connect(process.env.RECEIPT_DB_URL)
