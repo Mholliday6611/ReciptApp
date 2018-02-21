@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import {connect} from "react-redux"
 import {login, signup} from "../store/actions/user"
+import { ToastContainer, toast } from 'react-toastify';
 
 class Login extends Component {
 	constructor(){
@@ -12,8 +13,13 @@ class Login extends Component {
 		this.handleSignUpSubmit = this.handleSignUpSubmit.bind(this)
 		this.handleLoginSubmit = this.handleLoginSubmit.bind(this)
 		this.handleChange = this.handleChange.bind(this)
+		this.notify = this.notify.bind(this)
 	}
 	
+	notify(msg) {
+		return toast(msg,{position: toast.POSITION.BOTTOM_RIGHT});
+	}
+
 	handleLoginSubmit(e){
 		e.preventDefault();
 		this.props.login({
@@ -28,7 +34,7 @@ class Login extends Component {
 			name: this.state.regUsername,
 			email: this.state.regEmail,
 			pass: this.state.regPassword
-		})
+		},this.notify)
 	}
 	handleChange(e){
 		var name = e.target.name;
@@ -45,7 +51,7 @@ class Login extends Component {
 			<div className="container">
 				<div className="columns logreg">
 					<div className="column">
-						<form className="" onSubmit={this.handleSignUpSubmit}>
+						<form className="form" onSubmit={this.handleSignUpSubmit}>
 							<h1 className="title">New User!</h1>
 							<div className="field">
 								<label className="label">Username</label>
@@ -68,9 +74,9 @@ class Login extends Component {
 							<input className="button" type="submit" />
 						</form>
 					</div>
-					<div className="column" >
+					<div className="column">
 						<p>{this.props.message}</p>
-						<form className="" onSubmit={this.handleLoginSubmit}>
+						<form className="form" onSubmit={this.handleLoginSubmit}>
 							<h1 className="title">Login Here!</h1>
 							<div className="field">
 								<label className="label">Email</label>
@@ -88,6 +94,7 @@ class Login extends Component {
 						</form>
 					</div>
 				</div>
+				<ToastContainer autoClose={5000} />
 			</div>
 			)
 	}
@@ -100,7 +107,7 @@ const mapStateToProps = (state=>{
 function mapDispatchToProps(dispatch){
 	return({
 		login: (data,push) => dispatch(login(data,push)),
-		signup: data => dispatch(signup(data))
+		signup: (data,notify) => dispatch(signup(data,notify))
 	})
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Login)

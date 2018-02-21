@@ -5,6 +5,7 @@ var jwt = require("jsonwebtoken");
 var path = require("path")
 var User = db.User
 var Recipt = db.Recipt
+var Item = db.Item
 
 module.exports = function(app, passport){
 	app.post("/api/register", function(req,res){
@@ -16,11 +17,13 @@ module.exports = function(app, passport){
 		function(data){
 			if(data.success){
 				res.json({
-					success: "All good"
+					success: true,
+					message: "Awesome You're Signed Up!"
 				})
 			}else {
 				res.json({
-					Success:"not good"
+					Success:false,
+					message: "Try again :("
 				})
 			}
 		})
@@ -72,7 +75,8 @@ module.exports = function(app, passport){
 			subTotal: req.body.subTotal,
 			tax: req.body.tax,
 			totalPrice: req.body.totalPrice,
-			user: req.user._id
+			user: req.user._id,
+			createdAt: new Date()
 		}).save(function(err){
 			if(err){
 				res.send("error")
@@ -86,7 +90,7 @@ module.exports = function(app, passport){
 		res.send(req.user)
 	}),
 	app.get("/api/viewAllRecipts", passport.authenticate('jwt', { session: false }), function(req,res){
-		Recipt.find({user:req.user._id}, 'title customer', function(err,recipts){
+		Recipt.find({user:req.user._id}, 'title customer createdAt date paid', function(err,recipts){
 			res.send(recipts)
 		})
 	}),
@@ -97,6 +101,38 @@ module.exports = function(app, passport){
 			}else{
 				res.send("NOT ALLOWED")
 			}
+		})
+	}),
+	app.put("/api/markPaid/:id", passport.authenticate('jwt', { session: false }), function(req,res){
+		Recipt.findByIdAndUpdate(req.params.id, {$set:{paid:req.body.value}}, function(err,doc){
+			res.json({msg:"update success",info:req.body.value})
+		})
+	}),
+	app.post("/api/addInventory", passport.authenticate('jwt', { session: false }), function(req,res){
+		new Item({
+			name: req.body.name,
+			code: req.body.code,
+			description: req.body.description,
+			price: req.body.price,
+			user: req.user._id
+		}).save(function(err,item){
+			if(err){
+				res.send("error")
+			}
+			else{
+				req.user.update({$addToSet: {"inventory": item}}).exec()
+				res.send("success")
+			}
+		})
+	}),
+	app.get("/api/getInventory", passport.authenticate('jwt', { session: false }), function(req,res){
+		res.json({inventory: req.user.inventory})
+	}),
+	app.put("/api/removeItem/:id", passport.authenticate('jwt', {session: false}),function(req,res){
+		var updatedInventory = req.user.inventory.filter(i=> i._id != req.params.id)
+		req.user.update({$set: {"inventory": updatedInventory}}).exec()
+		Item.findOneAndRemove({_id: req.params.id}, function(err,doc){
+			res.send("delete success")
 		})
 	}),
 	app.get("*", function(req,res){

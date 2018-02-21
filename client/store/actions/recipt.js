@@ -11,6 +11,16 @@ export function selectRecipt(id,push) {
   return dispatch => api.viewRecipt(id)
     .then((response)=>{
       setCurrentRecipt(dispatch, response);
-      push("/recipt");
+      if(push){
+        push("/recipt");
+      }
+    });
+}
+
+export function Inventory(notify){
+  return dispatch => api.getInventory()
+    .then((response)=>{
+      dispatch({type: 'GET_INVENTORY', response});
+      notify("Item Added to Inventory")
     });
 }

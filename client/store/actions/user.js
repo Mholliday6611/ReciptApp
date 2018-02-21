@@ -20,11 +20,17 @@ export function login(data,push) {
     });
 }
 
-export function signup(data) {
+export function signup(data,notify) {
   return dispatch => api.register(data)
     .then((response)=>{
       console.log(response)
-      setCurrentUser(dispatch, response);
+      if(response.data.success){
+        dispatch({type: "SIGNUP_SUCCESS",response})
+        notify(response.data.message)
+      }
+      else{
+        dispatch({type: "SIGNUP_FAIL", response})
+      }
     });
 }
 

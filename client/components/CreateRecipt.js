@@ -1,7 +1,8 @@
 import React, {Component} from 'react'
 import {connect} from "react-redux"
 import api from "../utils/api"
-
+import {Inventory} from "../store/actions/recipt"
+import { ToastContainer, toast } from 'react-toastify';
 
 class CreateRecipt extends Component{
 	constructor(){
@@ -16,6 +17,13 @@ class CreateRecipt extends Component{
 		this.itemRender = this.itemRender.bind(this)
 		this.saveRecipt = this.saveRecipt.bind(this)
 		this.handleChange = this.handleChange.bind(this)
+		this.AddToInventory = this.AddToInventory.bind(this)
+		this.AddFromInventory = this.AddFromInventory.bind(this)
+		this.notify = this.notify
+	}
+
+	notify(msg) {
+		return toast(msg,{position: toast.POSITION.BOTTOM_RIGHT});
 	}
 
 	handleChange(e){
@@ -60,11 +68,11 @@ class CreateRecipt extends Component{
 			date: this.state.date,
 			subtotal: this.state.subtotal,
 			tax: this.state.tax,
-			total: this.state.total
+			totalPrice: this.state.total
 		}
 		console.log(recipt)
 		api.createRecipt(recipt)
-			.then(response => console.log(response))
+			.then(response => this.props.history.push("/profile"))
 	}
 
 	addProduct(){
@@ -93,19 +101,60 @@ class CreateRecipt extends Component{
 		})
 	}
 
+	AddFromInventory(e, item){
+		var i = e.target.name
+		this.setState({
+			["productName"+i] : item.name,
+			["description"+i] : item.description,
+			["price"+i] : item.price,
+			["code"+i] : item.code,
+		})
+	}
+	AddToInventory(e){
+		var i = e.target.name
+		api.createItem({
+			name: this.state["productName"+i],
+			description: this.state["description"+i],
+			price: this.state["price"+i],
+			code: this.state["code"+i]
+		})
+		.then(response=> 
+			this.props.Inventory(this.notify)
+		)
+	}
+
 	itemRender(){
-		console.log(this.state)
 		var arr = []
 
 		for(var i=0; i< this.state.items; i++){
 			arr.push(
 					<div>
-						<input name={"productName"+i} onChange={this.handleChange} placeholder="Product Name"/>
+						<input name={"productName"+i} value={this.state["productName"+i]} onChange={this.handleChange} placeholder="Product Name"/>
 						<input name={"quantity"+i} onChange={this.handleChange} placeholder="Quantity" type="number" />
-						<input name={"code"+i} onChange={this.handleChange} placeholder="Product Code"/>
-						<input name={"description"+i} onChange={this.handleChange} placeholder="Description"/>
-						<input name={"price"+i} onChange={this.handleChange} placeholder="Price" type="number" />
+						<input name={"code"+i} value={this.state["code"+i]} onChange={this.handleChange} placeholder="Product Code"/>
+						<input name={"description"+i} value={this.state["description"+i]} onChange={this.handleChange} placeholder="Description"/>
+						<input name={"price"+i} value={this.state["price"+i]} onChange={this.handleChange} placeholder="Price" type="number" />
 						<input name={"totalPrice"+i} value={this.state["totalPrice"+i]} disabled type="number" />
+						<div className="dropdown is-hoverable">
+						  <div className="dropdown-trigger">
+						    <button className="button" aria-haspopup="true" aria-controls="dropdown-menu4">
+						      <span>AddFromInventory</span>
+						      <span className="icon is-small">
+						        <i className="fas fa-angle-down" aria-hidden="true"></i>
+						      </span>
+						    </button>
+						  </div>
+						  <div className="dropdown-menu" id="dropdown-menu4" role="menu">
+						    <div className="dropdown-content">
+						      <div className="dropdown-item">
+						      	<ul>
+						        {this.props.inventory && this.props.inventory.map(j=> <a className="button" name={i} onClick={(e)=>this.AddFromInventory(e,j)}>{j.name}</a>)}
+						       	</ul>
+						      </div>
+						    </div>
+						  </div>
+						</div>
+						<a className="button" name={i} onClick={this.AddToInventory}>Add To Inventory</a>
 					</div>
 				)
 		}
@@ -114,6 +163,7 @@ class CreateRecipt extends Component{
 	}
 
 	render(){
+		console.log(this.state)
 		var items = this.itemRender()
 
 		return(
@@ -132,9 +182,20 @@ class CreateRecipt extends Component{
 					</form>
 					<button onClick={this.saveRecipt}>Save Recipt</button>
 					<button onClick={this.addProduct}>Add a row</button>
+					<ToastContainer autoClose={5000} />
 				</div>
 			)
 	}
 }
 
-export default CreateRecipt
+const mapStateToProps = (state=>{
+	return state.recipt
+})
+
+function mapDispatchToProps(dispatch){
+	return({
+		Inventory: () => dispatch(Inventory())
+	})
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(CreateRecipt)

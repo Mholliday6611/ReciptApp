@@ -1,3 +1,155 @@
+::-webkit-scrollbar-track
+{
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	background-color: #015249;
+}
+
+::-webkit-scrollbar
+{
+	width:4px;
+	background-color: #015249;
+}
+
+::-webkit-scrollbar-thumb
+{
+	background-color: #A5A5AF;
+}
+
+@font-face {
+font-family: Akrobat-Regular;
+src: url("/fonts/Akrobat-Regular.otf") format("truetype");
+}
+
+@font-face {
+font-family: Akrobat-Black;
+src: url("./fonts/Akrobat-Black.otf") format("truetype");
+}
+
+@font-face {
+font-family: Akrobat-Bold;
+src: url("./fonts/Akrobat-Bold.otf") format("truetype");
+}
+
+@font-face {
+font-family: Akrobat-thin;
+src: url("./fonts/Akrobat-Thin.otf") format("truetype");
+}
+
+@font-face {
+font-family: Akrobat-Light;
+src: url("./fonts/Akrobat-Light.otf") format("truetype");
+}
+
+@font-face {
+font-family: Margot-Bold;
+src: url("./fonts/Margot-Bold.ttf") format("truetype");
+}
+
+@font-face {
+font-family: Margot-Regular;
+src: url("./fonts/Margot-Regular.ttf") format("truetype");
+}
+
+@font-face {
+font-family: Saros-Regular;
+src: url("./fonts/Saros-Regular.otf") format("truetype");
+}
+
+@font-face {
+font-family: Simplifica;
+src: url("./fonts/SIMPLIFICATypeface.ttf") format("truetype");
+}
+
+
+.navbar{
+	background-color: #DCC7AA;
+}
+.navbar-item{
+	font-family: Akrobat-Black;
+	font-size: 30px;
+}
+.navbar-item p {
+	margin-right: 15px;
+	color: black;
+}
+.navbar-item button {
+	background-color: #EC576B;
+	border: black
+}
+body{
+}
+#MainTitle{
+	font-family: Margot-Bold;
+	font-size: 150px;
+	color: #EC576B;
+}
+#MainContainer{
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	/* bring your own prefixes */
+	transform: translate(-50%, -50%);
+}
+#MainContainer span{
+	color: #4EC5C1;
+}
+#introText{
+	font-family: Simplifica;
+	font-size: 40px
+}
+#link{
+	color: #4EC5C1;
+	font-size: 50px
+}
 .logreg {
 	margin-top: 100px
+}
+#profile{
+	height: 100%;
+}
+#CurrentRecipts{
+	overflow-x: hidden;
+	white-space: nowrap;
+}
+#CurrentRecipts:hover {
+    overflow-x: scroll;
+}
+
+#Inventory{
+	background-color: #DCC7AA;
+	overflow-x: hidden;
+	white-space: nowrap;
+}
+#Inventory:hover {
+    overflow-x: scroll;
+}
+
+.box{
+	margin: 5px;
+	margin-top: 20px;
+	display: inline-block; 
+	clear: none;
+	background-color:  #4EC5C1;
+	height: 75%;
+	font-family: Simplifica;
+}
+.box:not(:last-child) {
+    margin-bottom: .3rem
+}
+.profilebox{
+	overflow: hidden;
+	white-space: nowrap;
+}
+.profilebox:hover {
+    overflow-y: scroll;
+}
+#Something{
+}
+#profile div{
+	height: 33%;
+	/*border-top: 10px solid white */
+}
+.receiptContainer{
+	margin-top: 10px;
+	border: 1px solid black;
 }

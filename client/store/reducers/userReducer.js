@@ -16,7 +16,7 @@ export default function (state = initialState, action){
         ...state,
         willAuthenticate: false,
         isAuthenticated: true,
-        currentUser: action.response.data.username,
+        currentUser: action.response.data.username
       };
     case "AUTHENTICATION_UNSUCCESS":
       return {
@@ -24,6 +24,18 @@ export default function (state = initialState, action){
         willAuthenticate: false,
         isAuthenticated: false,
         message: action.response.data.msg,
+      };
+    case "SIGNUP_SUCCESS":
+      return {
+        ...state,
+        signUpSuccess: true,
+        signupMessage: action.response.data.message
+      };
+    case "SIGNUP_FAIL":
+      return {
+        ...state,
+        signUpSuccess: false,
+        signupMessage: action.response.data.message
       };
     case "AUTHENTICATION_FAILURE":
       return {

@@ -14,6 +14,13 @@ const config = {
    },
    module: {
     rules: [
+      {
+        test: /\.(ttf|otf|eot|woff|woff2)$/,
+        loader: "file-loader",
+        options: {
+          name: "client/css/fonts/[name].[ext]",
+        },
+      },
      {
        test: /(\.css|.scss)$/,
        use: [{
